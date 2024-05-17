@@ -36,6 +36,11 @@ public class Utils {
     return ErrorStatusUpdateControl.updateStatus(resource);
   }
 
+  /**
+   * 如果演示需要,模拟错误的情况
+   * @param webPage CR
+   * @throws ErrorSimulationException 异常
+   */
   public static void simulateErrorIfRequested(WebPage webPage) throws ErrorSimulationException {
     if (webPage.getSpec().getHtml().contains("error")) {
       //如果演示需要,模拟错误的情况
