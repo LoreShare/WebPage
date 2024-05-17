@@ -38,7 +38,7 @@ public class Utils {
 
   public static void simulateErrorIfRequested(WebPage webPage) throws ErrorSimulationException {
     if (webPage.getSpec().getHtml().contains("error")) {
-      // special case just to showcase error if doing a demo
+      //如果演示需要,模拟错误的情况
       throw new ErrorSimulationException("Simulating error");
     }
   }

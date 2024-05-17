@@ -1,6 +1,5 @@
 package io.javaoperatorsdk.operator.sample.dependentresource;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import io.fabric8.kubernetes.api.model.ConfigMapVolumeSourceBuilder;
@@ -9,6 +8,7 @@ import io.javaoperatorsdk.operator.api.reconciler.Context;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
 import io.javaoperatorsdk.operator.sample.Utils;
+import io.javaoperatorsdk.operator.sample.WebPageReconciler;
 import io.javaoperatorsdk.operator.sample.customresource.WebPage;
 
 import static io.javaoperatorsdk.operator.ReconcilerUtils.loadYaml;
@@ -27,29 +27,17 @@ public class DeploymentDependentResource
 
   @Override
   protected Deployment desired(WebPage webPage, Context<WebPage> context) {
-    Map<String, String> labels = new HashMap<>();
-    labels.put(SELECTOR, "true");
+    Map<String, String> labels = WebPageReconciler.lowLevelLabel();
     var deploymentName = deploymentName(webPage);
+
     Deployment deployment = loadYaml(Deployment.class, Utils.class, "deployment.yaml");
     deployment.getMetadata().setName(deploymentName);
     deployment.getMetadata().setNamespace(webPage.getMetadata().getNamespace());
     deployment.getMetadata().setLabels(labels);
     deployment.getSpec().getSelector().getMatchLabels().put("app", deploymentName);
 
-    deployment
-        .getSpec()
-        .getTemplate()
-        .getMetadata()
-        .getLabels()
-        .put("app", deploymentName);
-    deployment
-        .getSpec()
-        .getTemplate()
-        .getSpec()
-        .getVolumes()
-        .get(0)
-        .setConfigMap(
-            new ConfigMapVolumeSourceBuilder().withName(configMapName(webPage)).build());
+    deployment.getSpec().getTemplate().getMetadata().getLabels().put("app", deploymentName);
+    deployment.getSpec().getTemplate().getSpec().getVolumes().get(0).setConfigMap(new ConfigMapVolumeSourceBuilder().withName(configMapName(webPage)).build());
 
     return deployment;
   }

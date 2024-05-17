@@ -64,9 +64,10 @@ public class WebPageOperator {
     //  3.4 boolean started: 用于标识 Operator 是否已经启动
     Operator operator = new Operator(client, o -> o.withStopOnInformerErrorDuringStartup(false));
 
-    //获取环境变量,我们没有设置
+    //获取环境变量,我们没有设置,可以在DockerFile或者K8S编排文件中设置
     String reconcilerEnvVar = System.getenv(WEBPAGE_RECONCILER_ENV);
     //根据环境变量,注册不同的调和器
+    //我们做的话,只要写一种就好了,这里也只是注册了一种,他们的效果是一样的,只是实现方式有些区别
     if (WEBPAGE_CLASSIC_RECONCILER_ENV_VALUE.equals(reconcilerEnvVar)) {
       //低级API
       operator.register(new WebPageReconciler(client));
@@ -81,6 +82,7 @@ public class WebPageOperator {
     operator.start();
 
     //创建了一个HttpServer,端口号为8080,作用是作为探针接口,重启失败的Operator
+    //这个应该写在编排文件中
     HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
     server.createContext("/startup", new StartupHandler(operator));
     server.createContext("/healthz", new LivenessHandler(operator));

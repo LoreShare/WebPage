@@ -2,6 +2,9 @@ package io.javaoperatorsdk.operator.sample.customresource;
 
 import io.javaoperatorsdk.operator.api.ObservedGenerationAwareStatus;
 
+/**
+ * ObservedGenerationAwareStatus:用于支持生成感知性的状态子资源类扩展的辅助基类
+ */
 public class WebPageStatus extends ObservedGenerationAwareStatus {
 
   private String htmlConfigMap;
