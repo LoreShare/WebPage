@@ -4,7 +4,8 @@ metadata:
 # Use labels to match the resource with different reconciler implementations:
 # labels:
 #    low-level: "true"
-  name: hellows
+  name: web-page-cr
+  namespace: custom-namespace
 spec:
   exposed: false
   html: |
